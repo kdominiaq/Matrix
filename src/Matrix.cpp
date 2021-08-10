@@ -7,26 +7,28 @@
 template<class T>
 Matrix<T>::Matrix(unsigned int rows,unsigned int cols)
 {
-    data_.resize(rows);
-    for (size_t r = 0; r < rows; r++) {
-        data_[r].resize(cols);
+    rows_ = rows;
+    cols_ = cols;
+    data_.resize(rows_);
+
+    for (size_t r = 0; r < rows_; r++) {
+        data_[r].resize(cols_);
     }
 }
 
-
 template<typename T>
 Matrix<T> Matrix<T>::operator*(const Matrix &rhs) {
-    if (this->cols() != rhs.rows()) {
+    if (this->cols_ != rhs.rows_) {
         std::cerr << "multiply(): incorrect matrix dimensions" << std::endl;
         return Matrix<T>();
     }
 
     Matrix<T> result(2, 2);
-    for (size_t r = 0; r < result.rows(); r++)
+    for (size_t r = 0; r < result.rows_; r++)
     {
-        for (size_t c = 0; c < result.cols(); c++) {
+        for (size_t c = 0; c < result.cols_; c++) {
             result.data_[r][c] = 0;
-            for (size_t i = 0; i < this->cols(); i++) {
+            for (size_t i = 0; i < this->cols_; i++) {
                 result.data_[r][c] += this->data_[r][i] * rhs.data_[i][c];
             }
         }
@@ -35,7 +37,6 @@ Matrix<T> Matrix<T>::operator*(const Matrix &rhs) {
     return result;
 }
 
-
 template<typename T>
 void Matrix<T>::input() {
 
@@ -43,9 +44,9 @@ void Matrix<T>::input() {
     bool correct_type;
 
     std::cout << "Define Matrix value by value" << std::endl;
-    for (size_t r = 0; r < this->rows(); r++)
+    for (size_t r = 0; r < this->rows_; r++)
     {
-        for (size_t c = 0; c < this->cols(); c++) {
+        for (size_t c = 0; c < this->cols_; c++) {
             correct_type = false;
             while(!correct_type)
             {
@@ -67,12 +68,11 @@ void Matrix<T>::input() {
     }
 }
 
-
 template<typename T>
 void Matrix<T>::rand()
 {
-    for (size_t r = 0; r < rows(); r++) {
-        for (size_t c = 0; c < cols(); c++) {
+    for (size_t r = 0; r < rows_; r++) {
+        for (size_t c = 0; c < cols_; c++) {
             data_[r][c] = T(std::rand() % 101) /10 ;
         }
     }
@@ -88,8 +88,6 @@ void Matrix<T>::print()
         std::cout << std::endl;
     }
 }
-
-
 
 
 

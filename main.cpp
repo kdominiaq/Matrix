@@ -5,6 +5,8 @@
 int main() {
 
     srand(time(NULL));
+
+
     Matrix<double> a(2,2);
     Matrix<double> b(2, 2);
     a.rand();
@@ -12,9 +14,8 @@ int main() {
     b.rand();
     b.print();
     Matrix<double> c(2, 2);
+    c =a*b;
 
-    c = a * b;
-    c.input();
     c.print();
 
 
