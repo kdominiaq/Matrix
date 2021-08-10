@@ -5,16 +5,16 @@
 int main() {
 
     srand(time(NULL));
-    Matrix<int> a(2,2);
-    Matrix<int> b(2, 2);
+    Matrix<double> a(2,2);
+    Matrix<double> b(2, 2);
     a.rand();
     a.print();
     b.rand();
     b.print();
-    Matrix<int> c(2, 2);
+    Matrix<double> c(2, 2);
 
     c = a * b;
-
+    c.input();
     c.print();
 
 
