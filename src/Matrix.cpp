@@ -39,7 +39,7 @@ Matrix<T> Matrix<T>::operator*(Matrix<T> &rhs) {
 
 
 template<typename T>
-static Matrix<T> compute_grad(Matrix<T>& A, Matrix<T>& B){
+Matrix<T> Matrix<T>::compute_grad(Matrix<T>& A, Matrix<T>& B){
     Matrix<T> Z = A * B;
 
     std::cout << "compute";
