@@ -41,7 +41,11 @@ public:
      * @param rhs Second matrix to multiply
      * @return Matrix multiplication result
      */
-    Matrix<T> operator*(const Matrix& rhs);
+    Matrix<T> operator*(Matrix<T>& rhs);
+
+
+    static Matrix<T> compute_grad(Matrix<T>& A, Matrix<T>& B);
+
 
 
     /**

@@ -17,13 +17,13 @@ Matrix<T>::Matrix(unsigned int rows,unsigned int cols)
 }
 
 template<typename T>
-Matrix<T> Matrix<T>::operator*(const Matrix &rhs) {
+Matrix<T> Matrix<T>::operator*(Matrix<T> &rhs) {
     if (this->cols_ != rhs.rows_) {
         std::cerr << "multiply(): incorrect matrix dimensions" << std::endl;
         return Matrix<T>();
     }
 
-    Matrix<T> result(2, 2);
+    Matrix<T> result(this->rows_, rhs.cols_);
     for (size_t r = 0; r < result.rows_; r++)
     {
         for (size_t c = 0; c < result.cols_; c++) {
@@ -35,6 +35,16 @@ Matrix<T> Matrix<T>::operator*(const Matrix &rhs) {
     }
 
     return result;
+}
+
+
+template<typename T>
+static Matrix<T> compute_grad(Matrix<T>& A, Matrix<T>& B){
+    Matrix<T> Z = A * B;
+
+    std::cout << "compute";
+
+    return Z;
 }
 
 template<typename T>
@@ -68,6 +78,7 @@ void Matrix<T>::input() {
     }
 }
 
+
 template<typename T>
 void Matrix<T>::rand()
 {
@@ -77,6 +88,7 @@ void Matrix<T>::rand()
         }
     }
 }
+
 
 template<typename T>
 void Matrix<T>::print()
