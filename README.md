@@ -11,6 +11,5 @@ $ make
 ```
 ## Run
 ```bash
-$ cd build/
 $ ./exe
 ```
