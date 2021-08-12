@@ -42,9 +42,27 @@ template<typename T>
 Matrix<T> Matrix<T>::compute_grad(Matrix<T>& A, Matrix<T>& B){
     Matrix<T> Z = A * B;
 
-    std::cout << "compute";
 
-    return Z;
+            Matrix<T> dB_final(A.rows_*B.rows_, A.cols_*B.cols_);
+
+                for (size_t r = 0; r < B.rows_; r++) {
+                    for (size_t c = 0; c < B.cols_; c++) {
+                            Matrix<T> dB_itr(B.rows_, B.cols_);
+                            Matrix<T> dB_itr_step_result(Z.rows_, Z.cols_);
+                            dB_itr.data_[r][c] = 1;
+
+                            dB_itr_step_result = A*dB_itr;
+
+                            dB_itr_step_result.print();
+                            std::cout << "-------------------" <<std::endl;
+
+                        }
+                    }
+
+
+
+
+            return Z;
 }
 
 template<typename T>
