@@ -1,8 +1,15 @@
 # Matrix
-cmake CMakeLists.txt -B build/
-cd build/
-make
-
-for run:
-cd build/
-./exe
+## Prepare
+```bash
+$ git clone https://github.com/kdominiaq/Matrix.git
+```
+## Setup
+```bash
+$ cmake CMakeLists.txt -B build/
+$ cd build/
+$ make
+```
+## Run
+```bash
+$ ./exe
+```
