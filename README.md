@@ -10,7 +10,6 @@ Well, simply speaking, it's just an derivative matrix with respect to matrix.
 
 ![](https://i.ibb.co/F5qttK3/matrix-example.png)
 
-$$Z_{i \times k} = A_{i\times j} \cdot B_{j \times k}$$
 
 #### The "compute_grad" implementation is based on an appropriate matrix multiplication:
 
