@@ -180,7 +180,7 @@ void Matrix<T>::print()
             std::cout << " [";
         }
         for (size_t c = 0; c < data_[r].size(); c++) {
-            printf_s("%4.1f", data_[r][c]);
+            printf("%4.1f", data_[r][c]);
             if (c < data_[r].size() - 1) {
                 std::cout << ", ";
             }
