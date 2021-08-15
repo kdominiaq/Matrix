@@ -5,119 +5,168 @@
 #include "Matrix.h"
 
 template<class T>
-Matrix<T>::Matrix(unsigned int rows,unsigned int cols)
-{
-    rows_ = rows;
-    cols_ = cols;
-    data_.resize(rows_);
+        Matrix<T>::Matrix(unsigned int rows,unsigned int cols)
+        {
+            if(rows < 2){
+                throw std::invalid_argument("initialization(): incorrect matrix dimensions -> rows");
+            }
+            else if(cols < 2){
+                throw std::invalid_argument("initialization(): incorrect matrix dimensions -> cols");
+            }
+            rows_ = rows;
+            cols_ = cols;
+            data_.resize(rows_);
 
-    for (size_t r = 0; r < rows_; r++) {
-        data_[r].resize(cols_);
-    }
-}
-
-template<typename T>
-Matrix<T> Matrix<T>::operator*(Matrix<T> &rhs) {
-    if (this->cols_ != rhs.rows_) {
-        std::cerr << "multiply(): incorrect matrix dimensions" << std::endl;
-        return Matrix<T>();
-    }
-
-    Matrix<T> result(this->rows_, rhs.cols_);
-    for (size_t r = 0; r < result.rows_; r++)
-    {
-        for (size_t c = 0; c < result.cols_; c++) {
-            result.data_[r][c] = 0;
-            for (size_t i = 0; i < this->cols_; i++) {
-                result.data_[r][c] += this->data_[r][i] * rhs.data_[i][c];
+            for (size_t r = 0; r < rows_; r++) {
+                data_[r].resize(cols_);
             }
         }
-    }
 
-    return result;
-}
+        template<typename T>
+        Matrix<T> Matrix<T>::operator*(Matrix<T> &rhs) {
+            if (this->cols_ != rhs.rows_) {
+                throw std::logic_error("multiply(): incorrect matrix dimensions" );
+
+            }
+
+            Matrix<T> result(this->rows_, rhs.cols_);
+            for (size_t r = 0; r < result.rows_; r++)
+            {
+                for (size_t c = 0; c < result.cols_; c++) {
+                    result.data_[r][c] = 0;
+                    for (size_t i = 0; i < this->cols_; i++) {
+                        result.data_[r][c] += this->data_[r][i] * rhs.data_[i][c];
+                    }
+                }
+            }
+            return result;
+        }
 
 
-template<typename T>
-Matrix<T> Matrix<T>::compute_grad(Matrix<T>& A, Matrix<T>& B){
-    Matrix<T> Z = A * B;
+        template<typename T>
+        Matrix<T> Matrix<T>::compute_grad(Matrix<T> &A, Matrix<T> &B) {
+            Matrix<T> Z = A * B;
 
+            Matrix<T> dA_final(A.rows_*Z.rows_, A.cols_*Z.cols_);
+            Matrix<T> dB_final(B.rows_*Z.rows_, B.cols_*Z.cols_);
 
-            Matrix<T> dB_final(A.rows_*B.rows_, A.cols_*B.cols_);
+            // Values is needed for saving variable in final matrix
+            size_t r_temp = 0;
+            size_t c_temp = 0;
 
-                for (size_t r = 0; r < B.rows_; r++) {
-                    for (size_t c = 0; c < B.cols_; c++) {
-                            Matrix<T> dB_itr(B.rows_, B.cols_);
-                            Matrix<T> dB_itr_step_result(Z.rows_, Z.cols_);
-                            dB_itr.data_[r][c] = 1;
+            // dZ/dA
+            for (size_t r = 0; r < A.rows_; r++) {
+                for (size_t c = 0; c < A.cols_; c++) {
+                    Matrix<T> dA_itr(A.rows_, A.cols_);
+                    Matrix<T> dA_itr_partial(Z.rows_, Z.cols_);
+                    // Preparing Matrix for partial derivative, check README for more schematic of derivative matrix.
+                    dA_itr.data_[r][c] = 1;
+                    dA_itr_partial = dA_itr * B;
 
-                            dB_itr_step_result = A*dB_itr;
+                    // Saving the obtained results to the final matrix
+                    r_temp = r*A.rows_;
+                    for(size_t r_final = 0; r_final < dA_itr_partial.rows_; r_final++){
+                        c_temp = c * B.cols_;
+                        for(size_t c_final = 0; c_final < dA_itr_partial.cols_; c_final++){
 
-                            dB_itr_step_result.print();
-                            std::cout << "-------------------" <<std::endl;
-
+                            dA_final.data_[r_temp][c_temp] = dA_itr_partial.data_[r_final][c_final];
+                            c_temp++;
                         }
+                        r_temp++;
+                    }
+                }
+            }
+
+
+            //------------------------------------------------------------------------------------------------------
+
+            // Values is needed for saving variable in final matrix
+            r_temp = 0;
+            c_temp = 0;
+
+            // Preparing Matrix for partial derivative, check README for more schematic of derivative matrix.
+            for (size_t r = 0; r < B.rows_; r++) {
+                for (size_t c = 0; c < B.cols_; c++) {
+                    Matrix<T> dB_itr(B.rows_, B.cols_);
+                    Matrix<T> dB_itr_partial(Z.rows_, Z.cols_);
+                    dB_itr.data_[r][c] = 1;
+                    // Partial derivative
+                    dB_itr_partial = A * dB_itr;
+                    // Saving the obtained results to the final matrix
+                    r_temp = r*A.rows_;
+                    for(size_t r_final = 0; r_final < dB_itr_partial.rows_; r_final++){
+                        c_temp = c * B.cols_;
+                        for(size_t c_final = 0; c_final < dB_itr_partial.cols_; c_final++){
+
+                            dB_final.data_[r_temp][c_temp] = dB_itr_partial.data_[r_final][c_final];
+                            c_temp++;
+                        }
+                        r_temp++;
                     }
 
 
-
-
-            return Z;
-}
-
-template<typename T>
-void Matrix<T>::input() {
-
-    T temp;
-    bool correct_type;
-
-    std::cout << "Define Matrix value by value" << std::endl;
-    for (size_t r = 0; r < this->rows_; r++)
-    {
-        for (size_t c = 0; c < this->cols_; c++) {
-            correct_type = false;
-            while(!correct_type)
-            {
-                std::cout << "Row:" << r + 1 << ", Col: " << c + 1 << ": ";
-                std::cin >> temp;
-
-                if(std::cin.fail()){
-                    std::cout<<"Incorrect type of value!"<< std::endl;
-                    std::cin.clear();
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 }
-                else{
-                    correct_type = true;
-                }
-
             }
-            data_[r][c] = temp;
+
+            return dA_final;
         }
-    }
-}
 
 
-template<typename T>
-void Matrix<T>::rand()
-{
-    for (size_t r = 0; r < rows_; r++) {
-        for (size_t c = 0; c < cols_; c++) {
-            data_[r][c] = T(std::rand() % 101) /10 ;
+        template<typename T>
+        void Matrix<T>::init_value_by_user() {
+
+            T temp;
+            bool correct_type;
+
+            std::cout << "Define Matrix value by value" << std::endl;
+            for (size_t r = 0; r < this->rows_; r++)
+            {
+                for (size_t c = 0; c < this->cols_; c++) {
+                    correct_type = false;
+                    while(!correct_type)
+                    {
+                        std::cout << "Row:" << r + 1 << ", Col: " << c + 1 << ": ";
+                        std::cin >> temp;
+
+                        if(std::cin.fail()){
+                            std::cout<<"Incorrect type of value!"<< std::endl;
+                            std::cin.clear();
+                            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                        }
+                        else{
+                            correct_type = true;
+                        }
+
+                    }
+                    data_[r][c] = temp;
+                }
+            }
         }
-    }
-}
 
 
-template<typename T>
-void Matrix<T>::print()
-{
-    for (size_t r = 0; r < data_.size(); r++) {
-        for (size_t c = 0; c < data_[r].size(); c++) {
-            std::cout << data_[r][c]<< " ";
+        template<typename T>
+        void Matrix<T>::init_value()
+        {
+            int itr = 1;
+            for (size_t r = 0; r < rows_; r++) {
+                for (size_t c = 0; c < cols_; c++) {
+                    data_[r][c] = itr;
+                    itr++;
+                }
+            }
         }
-        std::cout << std::endl;
-    }
-}
+
+
+        template<typename T>
+        void Matrix<T>::print()
+        {
+            for (size_t r = 0; r < data_.size(); r++) {
+                for (size_t c = 0; c < data_[r].size(); c++) {
+                    std::cout << data_[r][c]<< " ";
+                }
+                std::cout << std::endl;
+            }
+        }
 
 
 
