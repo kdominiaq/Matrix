@@ -1,6 +1,6 @@
 # Matrix
 
-Matrix class implementation with template base, which allows using float and double variable types. Also, the class provides a mathematic multiplication operator $$"\cdot"$$.
+Matrix class implementation with template base, which allows using float and double variable types. Also, the class provides a mathematic multiplication operator "*".
 ## Main goal
 Matrix class has a static function: "compute_grad" to compute partial derivatives of matrices multiplication operation in regard to the first input of matrix multiplication and in regard to the second argument of Matrix multiplication e.g. Z = X* Y and goal is to compute "*".
 
