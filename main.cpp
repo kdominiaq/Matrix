@@ -21,7 +21,7 @@ int main() {
     z.print();
 
     std::cout << "The result of derivative matrix with respect to matrix: dZ/dA,  Z = A*B" << std::endl;
-    z = Matrix<double>::compute_grad(a, b);
+    z = Matrix<double>::compute_grad(a, b, true);
     z.print();
 
     return 0;
