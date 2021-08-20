@@ -63,7 +63,7 @@ template<class T>
             Matrix<T> dA_final(A.rows_ * Z.rows_, A.cols_ * Z.cols_);
             Matrix<T> dB_final(B.rows_ * Z.rows_, B.cols_ * Z.cols_);
 
-            // Values is needed for saving variable in final matrix
+            // Values are needed for saving variables in the final matrix
             size_t r_temp = 0;
             size_t c_temp = 0;
 
